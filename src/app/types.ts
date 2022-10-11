@@ -83,9 +83,7 @@ export class GameBoard implements GameBoard {
     }
   }
 
-  private markAdjacentMines(){
-    
-  }
+  private markAdjacentMines() {}
 
   getTile(position: Point): Tile {
     return Object.assign({}, this.board[position.x][position.y]);
@@ -102,6 +100,9 @@ export class GameBoard implements GameBoard {
   revealTile(position: Point) {
     this.board[position.x][position.y].reveal();
   }
+
+  // Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
+  revealNeighbors(position: Point) {}
 
   gameOver() {
     for (const arr of this.board) {
