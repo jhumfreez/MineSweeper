@@ -1,7 +1,14 @@
 import { Tile } from './types';
 
 export const generateBoard = (height: number, width: number) => {
-  return new Array(height).fill(new Array(width).fill(new Tile()));
+  const rows = new Array(height).fill(null);
+  for (let i = 0; i < rows.length; i++) {
+    rows[i] = new Array(width).fill(null);
+    for (let j = 0; j < rows[i].length; j++) {
+      rows[i][j] = new Tile();
+    }
+  }
+  return rows;
 };
 
 export const getRandomInt = (max: number) => {

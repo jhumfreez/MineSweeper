@@ -1,3 +1,10 @@
 p {
   font-family: Lato;
 }
+
+.btn-tile {
+  --size: 30px;
+  height: var(--size);
+  width: var(--size);
+  padding: 7px;
+}

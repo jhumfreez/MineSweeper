@@ -1,5 +1,17 @@
 import { generateBoard, getRandomInt } from './utils';
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export class Point implements Point {
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
 export interface Tile {
   isMine: boolean;
   revealed: boolean;
@@ -14,7 +26,7 @@ export interface GameBoard {
   score: number;
   boardSize: number;
   board: Tile[][];
-  reveal();
+  revealBoard();
   reset();
   updateScore(value: number);
 }
@@ -56,19 +68,23 @@ export class GameBoard implements GameBoard {
 
   private initMines() {
     // set isMine for random tiles until max is reached
-    for(let i = this.maxMineCount; i > 0; i--){
+    for (let i = this.maxMineCount; i > 0; i--) {
       const positionX = getRandomInt(this.boardSize - 1);
       const positionY = getRandomInt(this.boardSize - 1);
       this.board[positionX][positionY].setMine();
     }
   }
 
-  reveal() {
+  revealBoard() {
     for (const arr of this.board) {
       for (const tile of arr) {
         tile.reveal();
       }
     }
+  }
+
+  revealTile(position: Point) {
+    this.board[position.x][position.y].reveal();
   }
 
   reset() {
