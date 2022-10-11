@@ -16,6 +16,8 @@ export interface Tile {
   isMine: boolean;
   revealed: boolean;
   adjacentMineCount: number;
+  disabled: boolean;
+  disable();
   reveal();
   setMine();
   reset();
@@ -36,10 +38,12 @@ export class Tile implements Tile {
     this.isMine = false;
     this.revealed = false;
     this.adjacentMineCount = 0;
+    this.disabled = false;
   }
 
   reveal() {
     this.revealed = true;
+    this.disabled = true;
   }
 
   setMine() {
@@ -50,6 +54,10 @@ export class Tile implements Tile {
     this.isMine = false;
     this.revealed = false;
     this.adjacentMineCount = 0;
+  }
+
+  disable() {
+    this.disabled = true;
   }
 }
 
@@ -75,6 +83,14 @@ export class GameBoard implements GameBoard {
     }
   }
 
+  private markAdjacentMines(){
+    
+  }
+
+  getTile(position: Point): Tile {
+    return Object.assign({}, this.board[position.x][position.y]);
+  }
+
   revealBoard() {
     for (const arr of this.board) {
       for (const tile of arr) {
@@ -85,6 +101,14 @@ export class GameBoard implements GameBoard {
 
   revealTile(position: Point) {
     this.board[position.x][position.y].reveal();
+  }
+
+  gameOver() {
+    for (const arr of this.board) {
+      for (const tile of arr) {
+        tile.disable();
+      }
+    }
   }
 
   reset() {

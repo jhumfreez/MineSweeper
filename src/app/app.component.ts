@@ -16,11 +16,26 @@ export class AppComponent {
     this.board = new GameBoard(this.defaultSize, this.defaultMineCount);
   }
 
-  revealTile(x:number,y:number){
-    this.board.revealTile(new Point(x,y));
+  updateScore() {
+    this.board.updateScore(1);
   }
 
-  reset(){
+  // Game over
+  kaboom() {
+    this.board.gameOver();
+  }
+
+  revealTile(x: number, y: number) {
+    this.board.revealTile(new Point(x, y));
+    const tile = this.board.getTile(new Point(x, y));
+    if (!tile.isMine) {
+      this.updateScore();
+    } else {
+      this.kaboom();
+    }
+  }
+
+  reset() {
     this.board.reset();
   }
 }

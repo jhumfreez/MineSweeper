@@ -1,7 +1,14 @@
 <p>Start editing to see some magic happen :)</p>
 <div *ngFor="let row of board.board; index as i">
   <span *ngFor="let tile of row; index as j">
-    <button class="btn-tile" (click)="revealTile(i,j)">{{tile.revealed ? tile.adjacentMineCount: ''}}</button>
+    <button
+      [disabled]="tile.disabled"
+      class="btn-tile"
+      (click)="revealTile(i, j)"
+    >
+      {{ tile.revealed ? tile.adjacentMineCount : '' }}
+    </button>
   </span>
 </div>
 <button (click)="reset()">Reset</button>
+<p>Score: {{ board.score }}</p>
