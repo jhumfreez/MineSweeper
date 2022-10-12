@@ -54,6 +54,7 @@ export class Tile implements Tile {
     this.isMine = false;
     this.revealed = false;
     this.adjacentMineCount = 0;
+    this.disabled = false;
   }
 
   disable() {
@@ -81,9 +82,44 @@ export class GameBoard implements GameBoard {
       const positionY = getRandomInt(this.boardSize - 1);
       this.board[positionX][positionY].setMine();
     }
+    this.markAdjacentMines();
   }
 
-  private markAdjacentMines() {}
+  private markAdjacentMines() {
+    for (let r = 0; r < this.boardSize; r++) {
+      for (let c = 0; c < this.boardSize; c++) {
+        const prevRValid = r - 1 >= 0;
+        const nextRValid = r + 1 < this.boardSize;
+        const prevCValid = c - 1 >= 0;
+        const nextCValid = c + 1 < this.boardSize;
+
+        const n = prevCValid ? this.board[r][c - 1] : null;
+        const ne = prevRValid && nextCValid ? this.board[r - 1][c + 1] : null;
+        const e = nextCValid ? this.board[r][c + 1] : null;
+        const se = nextRValid && nextCValid ? this.board[r + 1][c + 1] : null;
+        const s = prevRValid ? this.board[r - 1][c] : null;
+        const sw = nextRValid && prevCValid ? this.board[r + 1][c - 1] : null;
+        const w = nextRValid ? this.board[r + 1][c] : null;
+        const nw = prevRValid && prevCValid ? this.board[r - 1][c - 1] : null;
+
+        const count = [n, ne, e, se, s, sw, w, nw].filter(
+          (t) => t?.isMine
+        ).length;
+        // if (count > 0) {
+        //   console.log(count, [n, e, s, w]);
+        // }
+        this.board[r][c].adjacentMineCount = count;
+      }
+    }
+  }
+
+  private disableTiles() {
+    for (const arr of this.board) {
+      for (const tile of arr) {
+        tile.disable();
+      }
+    }
+  }
 
   getTile(position: Point): Tile {
     return Object.assign({}, this.board[position.x][position.y]);
@@ -105,11 +141,8 @@ export class GameBoard implements GameBoard {
   revealNeighbors(position: Point) {}
 
   gameOver() {
-    for (const arr of this.board) {
-      for (const tile of arr) {
-        tile.disable();
-      }
-    }
+    this.revealBoard();
+    this.disableTiles();
   }
 
   reset() {

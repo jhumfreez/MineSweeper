@@ -12,7 +12,7 @@ export class AppComponent {
   defaultMineCount: number;
   constructor() {
     this.defaultSize = 15;
-    this.defaultMineCount = Math.floor(this.defaultSize * 0.2);
+    this.defaultMineCount = Math.floor((this.defaultSize ** 2) * 0.2);
     this.board = new GameBoard(this.defaultSize, this.defaultMineCount);
   }
 
