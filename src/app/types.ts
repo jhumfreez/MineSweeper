@@ -12,8 +12,16 @@ export class Point implements Point {
   }
 }
 
+export enum TileState {
+  NEUTRAL,
+  FLAGGED,
+  REVEALED_RISKY,
+  REVEALED_SAFE,
+}
+
 export interface Tile {
   isMine: boolean;
+  isFlagged: boolean;
   revealed: boolean;
   adjacentMineCount: number;
   disabled: boolean;
@@ -34,27 +42,67 @@ export interface GameBoard {
 }
 
 export class Tile implements Tile {
+  displayMap: Map<TileState, unknown>;
   constructor() {
+    this.init();
+    this.displayMap = new Map([
+      [TileState.NEUTRAL, ''],
+      [TileState.FLAGGED, 'F'],
+      [TileState.REVEALED_RISKY, 'M'],
+      [TileState.REVEALED_SAFE, this.adjacentMineCount + ''],
+    ]);
+  }
+
+  private init() {
     this.isMine = false;
+    this.isFlagged = false;
     this.revealed = false;
     this.adjacentMineCount = 0;
     this.disabled = false;
   }
 
-  reveal() {
+  /**
+   * Display values:
+   * - [default]: untouched/neutral
+   * - F: flagged
+   * - M: mine
+   * - [number]: adjacent mine count
+   */
+  get displayValue() {
+    let result = this.displayMap.get(TileState.NEUTRAL);
+    if(!this.revealed && this.isFlagged){
+      return this.displayMap.get(TileState.FLAGGED);
+    }
+    if(this.revealed && this.isMine){
+      return this.displayMap.get(TileState.REVEALED_RISKY);
+    }
+    if(this.revealed && !this.isMine){
+      return this.displayMap.get(TileState.REVEALED_SAFE);
+    }
+    return result;
+  }
+
+  reveal(): boolean {
     this.revealed = true;
     this.disabled = true;
+    return this.isMine;
+  }
+
+  toggleFlag() {
+    this.isFlagged = !this.isFlagged;
   }
 
   setMine() {
     this.isMine = true;
   }
 
+  setAdjacentMineCount(count: number) {
+    this.adjacentMineCount = count;
+    this.displayMap.set(TileState.REVEALED_SAFE, count + '');
+  }
+
   reset() {
-    this.isMine = false;
-    this.revealed = false;
-    this.adjacentMineCount = 0;
-    this.disabled = false;
+    this.init();
   }
 
   disable() {
@@ -68,6 +116,23 @@ export class GameBoard implements GameBoard {
     this.score = 0;
     this.boardSize = boardSize;
     this.initBoard(boardSize);
+  }
+
+  // For debug purposes
+  get realMineCount() {
+    let count = 0;
+    for (const row of this.board) {
+      count += row.filter((t) => t.isMine).length;
+    }
+    return !isNaN(count) ? count : 0;
+  }
+
+  get tileCount() {
+    return this.boardSize ** 2;
+  }
+
+  get percentMined() {
+    return +(this.realMineCount / this.tileCount).toFixed(2) * 100;
   }
 
   private initBoard(boardSize: number) {
@@ -88,6 +153,7 @@ export class GameBoard implements GameBoard {
   private markAdjacentMines() {
     for (let r = 0; r < this.boardSize; r++) {
       for (let c = 0; c < this.boardSize; c++) {
+        // Surely there's a better way lol
         const prevRValid = r - 1 >= 0;
         const nextRValid = r + 1 < this.boardSize;
         const prevCValid = c - 1 >= 0;
@@ -108,7 +174,7 @@ export class GameBoard implements GameBoard {
         // if (count > 0) {
         //   console.log(count, [n, e, s, w]);
         // }
-        this.board[r][c].adjacentMineCount = count;
+        this.board[r][c].setAdjacentMineCount(count);
       }
     }
   }
@@ -133,8 +199,19 @@ export class GameBoard implements GameBoard {
     }
   }
 
-  revealTile(position: Point) {
-    this.board[position.x][position.y].reveal();
+  /**
+   * @returns kaboom occurred
+   */
+  selectTile(position: Point, flagMode = false): boolean {
+    if (flagMode) {
+      this.board[position.x][position.y].toggleFlag();
+      return false;
+    }
+    return this.revealTile(position);
+  }
+
+  revealTile(position: Point): boolean {
+    return this.board[position.x][position.y].reveal();
   }
 
   // Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
@@ -152,6 +229,7 @@ export class GameBoard implements GameBoard {
         tile.reset();
       }
     }
+    this.initMines();
   }
 
   resize(newBoardSize: number) {
@@ -159,6 +237,7 @@ export class GameBoard implements GameBoard {
     this.initBoard(newBoardSize);
   }
 
+  // TODO: Score from timer
   updateScore(value: number) {
     this.score += value;
   }

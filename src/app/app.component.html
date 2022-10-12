@@ -1,14 +1,30 @@
-<p>Start editing to see some magic happen :)</p>
+<h2>Minesweeper</h2>
 <div *ngFor="let row of board.board; index as i">
   <span *ngFor="let tile of row; index as j">
     <button
       [disabled]="tile.disabled"
       class="btn--tile"
-      (click)="revealTile(i, j)"
+      (click)="selectTile(i, j)"
     >
-      <span class="btn--content">{{ tile.revealed ? tile.adjacentMineCount : tile.isMine ? 'M': '' }}</span>
+      <span class="btn--content">{{
+        tile.displayValue
+      }}</span>
     </button>
   </span>
 </div>
+
+<button
+  [ngClass]="{
+    'mode_btn--flag': flagInputMode,
+    'mode_btn--boom': !flagInputMode
+  }"
+  (click)="toggleInputMode()"
+>
+  Input Mode: {{ flagInputMode ? 'F' : 'X' }}
+</button>
+
 <p>Score: {{ board.score }}</p>
+<p>High Score: {{ highScore }}</p>
+<p>Mines: {{ board.realMineCount }}</p>
+<p>Percent Mines: %{{ board.percentMined }}</p>
 <button class="btn--util" (click)="reset()">Reset</button>

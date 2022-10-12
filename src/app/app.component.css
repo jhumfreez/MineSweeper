@@ -20,3 +20,12 @@ p {
   margin: 10px 0;
   display: block;
 }
+
+.mode_btn--boom {
+  background-color: rgb(247, 74, 74);
+  color: white;
+}
+
+.mode_btn--flag {
+  background-color: rgb(65, 190, 16);
+}
