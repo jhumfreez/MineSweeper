@@ -3,12 +3,10 @@
   <span *ngFor="let tile of row; index as j">
     <button
       [disabled]="tile.disabled"
-      class="btn--tile"
+      class="btn_tile"
       (click)="selectTile(i, j)"
     >
-      <span class="btn--content">{{
-        tile.displayValue
-      }}</span>
+      <span class="btn_tile--content">{{ tile.displayValue }}</span>
     </button>
   </span>
 </div>
@@ -27,4 +25,6 @@
 <p>High Score: {{ highScore }}</p>
 <p>Mines: {{ board.realMineCount }}</p>
 <p>Percent Mines: %{{ board.percentMined }}</p>
+<!-- FOR DEBUGGING -->
+<!-- <p>Percent Mines: %{{ board.percentMined }} (Max allowed: %{{maxMinePercentage * 100}})</p> -->
 <button class="btn--util" (click)="reset()">Reset</button>

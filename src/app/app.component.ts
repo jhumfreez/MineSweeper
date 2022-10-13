@@ -10,19 +10,23 @@ export class AppComponent {
   board: GameBoard;
   defaultSize: number;
   defaultMineCount: number;
+  maxMinePercentage: number;
   highScore: number;
 
   flagInputMode: boolean;
 
   constructor() {
     this.defaultSize = 15;
-    this.defaultMineCount = Math.floor((this.defaultSize ** 2) * 0.2);
+    this.maxMinePercentage = 0.2;
+    // FIXME: Investigate why this is not currently constant.
+    this.defaultMineCount = Math.floor((this.defaultSize ** 2) * this.maxMinePercentage);
     this.board = new GameBoard(this.defaultSize, this.defaultMineCount);
     
     this.highScore = 0;
     this.flagInputMode = false;
   }
 
+  // TODO: Migrate to directive (for right-click listener approach) or event listener (for key press toggle)
   toggleInputMode(){
     this.flagInputMode = !this.flagInputMode;
   }

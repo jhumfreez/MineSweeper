@@ -142,10 +142,16 @@ export class GameBoard implements GameBoard {
 
   private initMines() {
     // set isMine for random tiles until max is reached
+    // TODO: Refactor to reduce loops when space is already occupied
     for (let i = this.maxMineCount; i > 0; i--) {
       const positionX = getRandomInt(this.boardSize - 1);
       const positionY = getRandomInt(this.boardSize - 1);
-      this.board[positionX][positionY].setMine();
+      if(!this.board[positionX][positionY].isMine){
+        this.board[positionX][positionY].setMine();
+      } else {
+        // Room for improvement: This is non-optimal (bigger issue) & technically a risk for infinite loop if max were %100 (but then again that would make the game unwinnable. So... *shrug*)
+        i++;
+      }
     }
     this.markAdjacentMines();
   }

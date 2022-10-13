@@ -2,14 +2,14 @@ p {
   font-family: Lato;
 }
 
-.btn--tile {
+.btn_tile {
   --size: 30px;
   height: var(--size);
   width: var(--size);
   contain: content;
 }
 
-.btn--content {
+.btn_tile--content {
   position: absolute;
   top: 50%;
   left: 50%;
