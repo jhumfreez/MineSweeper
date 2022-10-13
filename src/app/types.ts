@@ -220,8 +220,11 @@ export class GameBoard implements GameBoard {
     return this.board[position.x][position.y].reveal();
   }
 
-  // Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
+  // TODO: [essential feature] Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
   revealNeighbors(position: Point) {}
+
+  // TODO: [auto-play idea] detect spaces adjacent to tile that are revealed to facilitate auto-play
+  adjacentOptions(tile: Tile){}
 
   gameOver() {
     this.revealBoard();
