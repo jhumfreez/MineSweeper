@@ -98,7 +98,7 @@ export class Tile implements Tile {
 
   setAdjacentMineCount(count: number) {
     this.adjacentMineCount = count;
-    this.displayMap.set(TileState.REVEALED_SAFE, count + '');
+    this.displayMap.set(TileState.REVEALED_SAFE, count > 0 ? count + '' : '');
   }
 
   reset() {

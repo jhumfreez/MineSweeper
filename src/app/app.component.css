@@ -16,6 +16,10 @@ p {
   transform: translate(-50%, -50%);
 }
 
+.btn_tile--warn {
+  color: red;
+}
+
 .btn--util {
   margin: 10px 0;
   display: block;

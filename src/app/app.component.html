@@ -6,7 +6,7 @@
       class="btn_tile"
       (click)="selectTile(i, j)"
     >
-      <span class="btn_tile--content">{{ tile.displayValue }}</span>
+      <span class="btn_tile--content" [ngClass]="{'btn_tile--warn': tile.isMine}">{{ tile.displayValue }}</span>
     </button>
   </span>
 </div>
