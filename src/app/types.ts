@@ -177,9 +177,6 @@ export class GameBoard implements GameBoard {
         const count = [n, ne, e, se, s, sw, w, nw].filter(
           (t) => t?.isMine
         ).length;
-        // if (count > 0) {
-        //   console.log(count, [n, e, s, w]);
-        // }
         this.board[r][c].setAdjacentMineCount(count);
       }
     }
