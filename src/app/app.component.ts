@@ -18,7 +18,6 @@ export class AppComponent {
   constructor() {
     this.defaultSize = 15;
     this.maxMinePercentage = 0.15;
-    // FIXME: Investigate why this is not currently constant.
     this.defaultMineCount = Math.floor((this.defaultSize ** 2) * this.maxMinePercentage);
     this.board = new GameBoard(this.defaultSize, this.defaultMineCount);
     
