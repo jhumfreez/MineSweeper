@@ -28,6 +28,7 @@ export interface Tile {
   adjacentMineCount: number;
   disabled: boolean;
   neighbors: neighbors<Tile>;
+  location: Point;
   disable();
   reveal();
   setMine();
@@ -46,7 +47,7 @@ export interface GameBoard {
 
 export class Tile implements Tile {
   displayMap: Map<TileState, unknown>;
-  constructor() {
+  constructor(public location: Point) {
     this.init();
     this.displayMap = new Map([
       [TileState.NEUTRAL, ''],
