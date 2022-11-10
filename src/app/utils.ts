@@ -1,5 +1,8 @@
 import { Tile } from './types';
 
+/**
+ * Generate empty 2D game board of height x width
+ */
 export const generateBoard = (height: number, width: number) => {
   const rows = new Array(height).fill(null);
   for (let i = 0; i < rows.length; i++) {
@@ -11,6 +14,9 @@ export const generateBoard = (height: number, width: number) => {
   return rows;
 };
 
+/**
+ * Generate random number from 0 to max
+ */
 export const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * max);
 };
