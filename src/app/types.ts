@@ -20,7 +20,7 @@ export enum TileState {
   REVEALED_RISKY,
   REVEALED_SAFE,
 }
-
+// TODO: re-evaluate access modifiers
 export interface Tile {
   isMine: boolean;
   isFlagged: boolean;
@@ -221,7 +221,7 @@ export class GameBoard implements GameBoard {
   }
 
   getTile(position: Point): Tile {
-    return Object.assign({}, this.board[position.x][position.y]);
+    return structuredClone(this.board[position.x][position.y]);
   }
 
   revealBoard() {
@@ -248,7 +248,20 @@ export class GameBoard implements GameBoard {
   }
 
   // TODO: [essential feature] Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
-  revealNeighbors(position: Point) {}
+  revealSafeNeighbors(tilePosition: Point) {
+    // TODO: getTile seems a little pointless atm... This could be better.
+    const currentTile = this.getTile(tilePosition);
+    if(currentTile.adjacentMineCount){
+      return;
+    }
+    currentTile.reveal();
+    
+    for (let neighor of currentTile.neighbors){
+      if(neighor){
+        this.revealSafeNeighbors(neighor.location);
+      }
+    }
+  }
 
   // TODO: [auto-play idea] detect spaces adjacent to tile that are revealed to facilitate auto-play
   adjacentOptions(tile: Tile) {}
