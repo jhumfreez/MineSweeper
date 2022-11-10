@@ -2,6 +2,10 @@ import { generateBoard, getRandomInt } from './utils';
 
 export type neighbors<T> = [T | null, T | null, T | null, T | null];
 
+
+
+type neighborTree<T>
+
 export interface Point {
   x: number;
   y: number;
@@ -221,7 +225,9 @@ export class GameBoard implements GameBoard {
   }
 
   getTile(position: Point): Tile {
-    return structuredClone(this.board[position.x][position.y]);
+    // TODO: Refactor to remove side-effect dependency
+    // return structuredClone(this.board[position.x][position.y]);
+    return this.board[position.x][position.y];
   }
 
   revealBoard() {
@@ -243,15 +249,19 @@ export class GameBoard implements GameBoard {
     return this.revealTile(position);
   }
 
-  revealTile(position: Point): boolean {
-    return this.board[position.x][position.y].reveal();
+  revealTile(tilePosition: Point): boolean {
+    // uncomment after fixing
+    // this.revealSafeNeighbors(tilePosition);
+    return this.board[tilePosition.x][tilePosition.y].reveal();
+    // return currentTile.reveal();
   }
 
   // TODO: [essential feature] Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
+  // FIXME: Doesn't capture that a tile was already visited, 4x4 of 0 adjacent would result in inf loop!
   revealSafeNeighbors(tilePosition: Point) {
     // TODO: getTile seems a little pointless atm... This could be better.
     const currentTile = this.getTile(tilePosition);
-    if(currentTile.adjacentMineCount){
+    if(currentTile.adjacentMineCount > 0){
       return;
     }
     currentTile.reveal();
