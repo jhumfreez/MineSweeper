@@ -1,5 +1,7 @@
 import { generateBoard, getRandomInt } from './utils';
 
+export type neighbors<T> = [T | null, T | null, T | null, T | null];
+
 export interface Point {
   x: number;
   y: number;
@@ -25,6 +27,7 @@ export interface Tile {
   revealed: boolean;
   adjacentMineCount: number;
   disabled: boolean;
+  neighbors: neighbors<Tile>;
   disable();
   reveal();
   setMine();
@@ -51,6 +54,7 @@ export class Tile implements Tile {
       [TileState.REVEALED_RISKY, 'M'],
       [TileState.REVEALED_SAFE, this.adjacentMineCount + ''],
     ]);
+    this.neighbors = [null, null, null, null];
   }
 
   private init() {
@@ -70,16 +74,20 @@ export class Tile implements Tile {
    */
   get displayValue() {
     let result = this.displayMap.get(TileState.NEUTRAL);
-    if(!this.revealed && this.isFlagged){
+    if (!this.revealed && this.isFlagged) {
       return this.displayMap.get(TileState.FLAGGED);
     }
-    if(this.revealed && this.isMine){
+    if (this.revealed && this.isMine) {
       return this.displayMap.get(TileState.REVEALED_RISKY);
     }
-    if(this.revealed && !this.isMine){
+    if (this.revealed && !this.isMine) {
       return this.displayMap.get(TileState.REVEALED_SAFE);
     }
     return result;
+  }
+
+  assignNeighbors(north: Tile, east: Tile, south: Tile, west: Tile) {
+    this.neighbors = [north, east, south, west];
   }
 
   reveal(): boolean {
@@ -116,6 +124,7 @@ export class GameBoard implements GameBoard {
     this.score = 0;
     this.boardSize = boardSize;
     this.initBoard(boardSize);
+    this.discoverTileNeighbors();
   }
 
   // For debug purposes
@@ -146,7 +155,7 @@ export class GameBoard implements GameBoard {
     for (let i = this.maxMineCount; i > 0; i--) {
       const positionX = getRandomInt(this.boardSize - 1);
       const positionY = getRandomInt(this.boardSize - 1);
-      if(!this.board[positionX][positionY].isMine){
+      if (!this.board[positionX][positionY].isMine) {
         this.board[positionX][positionY].setMine();
       } else {
         // Room for improvement: This is non-optimal (bigger issue) & technically a risk for infinite loop if max were %100 (but then again that would make the game unwinnable. So... *shrug*)
@@ -157,27 +166,30 @@ export class GameBoard implements GameBoard {
   }
 
   private markAdjacentMines() {
-    for (let r = 0; r < this.boardSize; r++) {
-      for (let c = 0; c < this.boardSize; c++) {
+    for (let row = 0; row < this.boardSize; row++) {
+      for (let col = 0; col < this.boardSize; col++) {
         // Surely there's a better way lol
-        const prevRValid = r - 1 >= 0;
-        const nextRValid = r + 1 < this.boardSize;
-        const prevCValid = c - 1 >= 0;
-        const nextCValid = c + 1 < this.boardSize;
+        const prevRowValid = row - 1 >= 0;
+        const nextRowValid = row + 1 < this.boardSize;
+        const prevColValid = col - 1 >= 0;
+        const nextColValid = col + 1 < this.boardSize;
 
-        const n = prevCValid ? this.board[r][c - 1] : null;
-        const ne = prevRValid && nextCValid ? this.board[r - 1][c + 1] : null;
-        const e = nextCValid ? this.board[r][c + 1] : null;
-        const se = nextRValid && nextCValid ? this.board[r + 1][c + 1] : null;
-        const s = prevRValid ? this.board[r - 1][c] : null;
-        const sw = nextRValid && prevCValid ? this.board[r + 1][c - 1] : null;
-        const w = nextRValid ? this.board[r + 1][c] : null;
-        const nw = prevRValid && prevCValid ? this.board[r - 1][c - 1] : null;
-
+        const n = prevRowValid ? this.board[row - 1][col] : null;
+        const s = nextRowValid ? this.board[row + 1][col] : null;
+        const w = prevColValid ? this.board[row][col - 1] : null;
+        const e = nextColValid ? this.board[row][col + 1] : null;
+        const ne =
+          prevRowValid && nextColValid ? this.board[row - 1][col + 1] : null;
+        const se =
+          nextRowValid && nextColValid ? this.board[row + 1][col + 1] : null;
+        const sw =
+          nextRowValid && prevColValid ? this.board[row + 1][col - 1] : null;
+        const nw =
+          prevRowValid && prevColValid ? this.board[row - 1][col - 1] : null;
         const count = [n, ne, e, se, s, sw, w, nw].filter(
           (t) => t?.isMine
         ).length;
-        this.board[r][c].setAdjacentMineCount(count);
+        this.board[row][col].setAdjacentMineCount(count);
       }
     }
   }
@@ -186,6 +198,23 @@ export class GameBoard implements GameBoard {
     for (const arr of this.board) {
       for (const tile of arr) {
         tile.disable();
+      }
+    }
+  }
+
+  private discoverTileNeighbors() {
+    for (let row = 0; row < this.boardSize; row++) {
+      for (let col = 0; col < this.boardSize; col++) {
+        const prevRowValid = row - 1 >= 0;
+        const nextRowValid = row + 1 < this.boardSize;
+        const prevColValid = col - 1 >= 0;
+        const nextColValid = col + 1 < this.boardSize;
+
+        const n = prevRowValid ? this.board[row - 1][col] : null;
+        const s = nextRowValid ? this.board[row + 1][col] : null;
+        const w = prevColValid ? this.board[row][col - 1] : null;
+        const e = nextColValid ? this.board[row][col + 1] : null;
+        this.board[row][col].assignNeighbors(n, e, s, w);
       }
     }
   }
@@ -221,7 +250,7 @@ export class GameBoard implements GameBoard {
   revealNeighbors(position: Point) {}
 
   // TODO: [auto-play idea] detect spaces adjacent to tile that are revealed to facilitate auto-play
-  adjacentOptions(tile: Tile){}
+  adjacentOptions(tile: Tile) {}
 
   gameOver() {
     this.revealBoard();
