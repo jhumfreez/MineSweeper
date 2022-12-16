@@ -3,8 +3,9 @@
     <button *ngFor="let tile of row; index as j"
       [disabled]="tile.disabled"
       class="btn_tile"
-      (click)="selectTile(i, j)"
+      (onEngageTile)="selectTile($event)"
       appModeToggle
+      [position]="tile.location"
       oncontextmenu="return false;"
     >
       <span

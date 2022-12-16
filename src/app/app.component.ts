@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameBoard, Point } from './types';
+import { GameBoard, Point, TileEventType } from './types';
 
 @Component({
   selector: 'my-app',
@@ -44,8 +44,10 @@ export class AppComponent {
     this.highScore = this.board.score > this.highScore ? this.board.score : this.highScore;
   }
 
-  selectTile(x:number, y:number){
-    const kaboom = this.board.selectTile(new Point(x,y), this.flagInputMode);
+  // selectTile(x:number, y:number){
+  selectTile(engageTile: [TileEventType, Point]){
+    const isFlagEvent = engageTile[0] === 'F';
+    const kaboom = this.board.selectTile(engageTile[1], isFlagEvent);
     if (!kaboom) {
       this.updateScore();
     } else {

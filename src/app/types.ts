@@ -11,6 +11,8 @@ export enum MouseButton {
 
 export type neighbors<T> = [T | null, T | null, T | null, T | null];
 
+export type TileEventType = 'F' | 'X';
+
 export interface Point {
   x: number;
   y: number;
