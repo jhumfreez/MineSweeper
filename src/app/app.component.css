@@ -2,6 +2,11 @@ p {
   font-family: Lato;
 }
 
+.btn_tile--row {
+  --size: 30px;
+  height: var(--size);
+}
+
 .btn_tile {
   --size: 30px;
   height: var(--size);

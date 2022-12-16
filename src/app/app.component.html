@@ -1,16 +1,18 @@
 <h2>Minesweeper</h2>
-<div appModeToggle>
-  <div *ngFor="let row of board.board; index as i">
-    <span *ngFor="let tile of row; index as j">
-      <button
+<div class="btn_tile--row" *ngFor="let row of board.board; index as i">
+    <button *ngFor="let tile of row; index as j"
       [disabled]="tile.disabled"
       class="btn_tile"
       (click)="selectTile(i, j)"
+      appModeToggle
+      oncontextmenu="return false;"
+    >
+      <span
+        class="btn_tile--content"
+        [ngClass]="{ 'btn_tile--warn': tile.isMine && tile.revealed }"
+        >{{ tile.displayValue }}</span
       >
-        <span class="btn_tile--content" [ngClass]="{'btn_tile--warn': tile.isMine && tile.revealed}">{{ tile.displayValue }}</span>
-      </button>
-    </span>
-  </div>
+    </button>
 </div>
 
 <button
