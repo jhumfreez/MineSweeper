@@ -3,9 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { ModeToggleDirective } from './mode-toggle.directive';
+
 @NgModule({
   imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent],
+  declarations: [AppComponent, ModeToggleDirective],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

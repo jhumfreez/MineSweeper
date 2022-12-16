@@ -1,5 +1,14 @@
 import { generateBoard, getRandomInt, isSamePoint } from './utils';
 
+// https://w3c.github.io/uievents/#interface-mouseevent
+export enum MouseButton {
+  PRIMARY,
+  MIDDLE,
+  RIGHT,
+  BACK,
+  FORWARD,
+}
+
 export type neighbors<T> = [T | null, T | null, T | null, T | null];
 
 export interface Point {
