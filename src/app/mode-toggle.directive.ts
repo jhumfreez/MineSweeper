@@ -10,9 +10,7 @@ export class ModeToggleDirective {
   @Input() position: Point;
   
   @HostListener('mouseup', ['$event'])
-  submit(event: MouseEvent) {
-    console.log('Ack:', event.button);
-    
+  submit(event: MouseEvent) {    
     const tileEvent = event.button === MouseButton.PRIMARY ? 'X' : 'F';
     this.onEngageTile.emit([tileEvent, this.position]);
     event.preventDefault();

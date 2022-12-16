@@ -278,8 +278,9 @@ export class GameBoard implements GameBoard {
     }
   }
 
+  // TODO: [essential feature] There should be a guarantee that game is completable.
   // TODO: [auto-play idea] detect spaces adjacent to tile that are revealed to facilitate auto-play
-  adjacentOptions(tile: Tile) {}
+  // adjacentOptions(tile: Tile) {}
 
   gameOver() {
     this.revealBoard();

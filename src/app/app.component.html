@@ -1,22 +1,24 @@
 <h2>Minesweeper</h2>
+<button class="btn--util" (click)="reset()">Reset</button>
 <div class="btn_tile--row" *ngFor="let row of board.board; index as i">
-    <button *ngFor="let tile of row; index as j"
-      [disabled]="tile.disabled"
-      class="btn_tile"
-      (onEngageTile)="selectTile($event)"
-      appModeToggle
-      [position]="tile.location"
-      oncontextmenu="return false;"
+  <button
+    *ngFor="let tile of row; index as j"
+    [disabled]="tile.disabled"
+    class="btn_tile"
+    (onEngageTile)="selectTile($event)"
+    appModeToggle
+    [position]="tile.location"
+    oncontextmenu="return false;"
+  >
+    <span
+      class="btn_tile--content"
+      [ngClass]="{ 'btn_tile--warn': tile.isMine && tile.revealed }"
+      >{{ tile.displayValue }}</span
     >
-      <span
-        class="btn_tile--content"
-        [ngClass]="{ 'btn_tile--warn': tile.isMine && tile.revealed }"
-        >{{ tile.displayValue }}</span
-      >
-    </button>
+  </button>
 </div>
 
-<button
+<!-- <button
   [ngClass]="{
     'mode_btn--flag': flagInputMode,
     'mode_btn--boom': !flagInputMode
@@ -24,7 +26,7 @@
   (click)="toggleInputMode()"
 >
   Input Mode: {{ flagInputMode ? 'F' : 'X' }}
-</button>
+</button> -->
 
 <p>Score: {{ board.score }}</p>
 <p>High Score: {{ highScore }}</p>
@@ -32,4 +34,3 @@
 <p>Percent Mines: %{{ board.percentMined }}</p>
 <!-- FOR DEBUGGING -->
 <!-- <p>Percent Mines: %{{ board.percentMined }} (Max allowed: %{{maxMinePercentage * 100}})</p> -->
-<button class="btn--util" (click)="reset()">Reset</button>
