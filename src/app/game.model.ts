@@ -310,6 +310,7 @@ export class GameBoard implements GameBoard {
   }
 
   // TODO: Score from timer
+  // TODO: Add timer lol
   updateScore(value: number) {
     this.score += value;
   }
