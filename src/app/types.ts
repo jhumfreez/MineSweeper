@@ -7,7 +7,6 @@ export enum MouseButton {
   FORWARD,
 }
 
-
 export type TileEventType = 'F' | 'X';
 
 export interface Point {

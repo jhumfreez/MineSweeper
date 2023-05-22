@@ -8,9 +8,6 @@ export interface GameBoard {
   score: number;
   boardSize: number;
   board: Tile[][];
-  revealBoard();
-  reset();
-  updateScore(value: number);
 }
 
 // TODO: re-evaluate access modifiers
@@ -22,10 +19,6 @@ export interface Tile {
   disabled: boolean;
   neighbors: neighbors<Tile>;
   location: Point;
-  disable();
-  reveal();
-  setMine();
-  reset();
 }
 
 export class Tile implements Tile {
