@@ -22,6 +22,8 @@ export interface Tile {
   disabled: boolean;
   neighbors: neighbors<Tile>;
   location: Point;
+  /** CSS class applied to tile */
+  styleClass: string;
   disable(): void;
   reveal(): void;
   setMine(): void;
@@ -29,7 +31,14 @@ export interface Tile {
 }
 
 export class Tile implements Tile {
-  displayMap: Map<TileState, unknown>;
+  displayMap: Map<TileState, string>;
+  // TODO: Merge with displayMap
+  classMap = new Map([
+    [TileState.NEUTRAL, 'btn_tile--default'],
+    [TileState.FLAGGED, 'btn_tile--flagged'],
+    [TileState.REVEALED_RISKY, 'btn_tile--revealed'],
+    [TileState.REVEALED_SAFE, 'btn_tile--boom'],
+  ]);
   constructor(public location: Point) {
     this.init();
     this.displayMap = new Map([
@@ -47,6 +56,7 @@ export class Tile implements Tile {
     this.revealed = false;
     this.adjacentMineCount = 0;
     this.disabled = false;
+    this.styleClass = this.classMap.get(TileState.NEUTRAL);
   }
 
   /**
@@ -75,12 +85,16 @@ export class Tile implements Tile {
   }
 
   reveal(): boolean {
+    this.styleClass = this.isMine
+      ? this.classMap.get(TileState.REVEALED_RISKY)
+      : this.classMap.get(TileState.REVEALED_SAFE);
     this.revealed = true;
     this.disabled = true;
     return this.isMine;
   }
 
   toggleFlag() {
+    this.styleClass = this.classMap.get(TileState.FLAGGED);
     this.isFlagged = !this.isFlagged;
   }
 

@@ -3,14 +3,12 @@ p {
 }
 
 .btn_tile--row {
-  --size: 30px;
-  height: var(--size);
+  height: var(--tile-size);
 }
 
 .btn_tile {
-  --size: 30px;
-  height: var(--size);
-  width: var(--size);
+  height: var(--tile-size);
+  width: var(--tile-size);
   contain: content;
 }
 
@@ -30,11 +28,18 @@ p {
   display: block;
 }
 
-.mode_btn--boom {
-  background-color: rgb(247, 74, 74);
-  color: white;
+.btn_tile--default {
+  background-color: var(--bgc-default);
 }
 
-.mode_btn--flag {
-  background-color: rgb(65, 190, 16);
+.btn_tile--flagged {
+  background-color: var(--bgc-flagged);
+}
+
+.btn_tile--revealed {
+  background-color: var(--bgc-revealed);
+}
+
+.btn_tile--boom {
+  background-color: var(--bgc-boom);
 }

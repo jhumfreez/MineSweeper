@@ -5,6 +5,7 @@
     *ngFor="let tile of row; index as j"
     [disabled]="tile.disabled"
     class="btn_tile"
+    [ngClass]="tile.styleClass"
     (onEngageTile)="selectTile($event)"
     appModeToggle
     [position]="tile.location"
@@ -17,16 +18,6 @@
     >
   </button>
 </div>
-
-<!-- <button
-  [ngClass]="{
-    'mode_btn--flag': flagInputMode,
-    'mode_btn--boom': !flagInputMode
-  }"
-  (click)="toggleInputMode()"
->
-  Input Mode: {{ flagInputMode ? 'F' : 'X' }}
-</button> -->
 
 <p>Score: {{ board.score }}</p>
 <p>High Score: {{ highScore }}</p>
