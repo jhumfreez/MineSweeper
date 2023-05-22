@@ -239,7 +239,8 @@ export class GameBoard implements GameBoard {
       this.board[position.x][position.y].toggleFlag();
       return false;
     }
-    return this.revealTile(position);
+    const kaboom = this.revealTile(position);
+    return kaboom;
   }
 
   revealTile(tilePosition: Point): boolean {
