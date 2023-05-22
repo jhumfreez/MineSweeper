@@ -36,8 +36,8 @@ export class Tile implements Tile {
   classMap = new Map([
     [TileState.NEUTRAL, 'btn_tile--default'],
     [TileState.FLAGGED, 'btn_tile--flagged'],
-    [TileState.REVEALED_RISKY, 'btn_tile--revealed'],
-    [TileState.REVEALED_SAFE, 'btn_tile--boom'],
+    [TileState.REVEALED_RISKY, 'btn_tile--boom'],
+    [TileState.REVEALED_SAFE, 'btn_tile--revealed'],
   ]);
   constructor(public location: Point) {
     this.init();

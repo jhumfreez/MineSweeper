@@ -19,10 +19,6 @@ p {
   transform: translate(-50%, -50%);
 }
 
-.btn_tile--warn {
-  color: red;
-}
-
 .btn--util {
   margin: 10px 0;
   display: block;
@@ -30,16 +26,20 @@ p {
 
 .btn_tile--default {
   background-color: var(--bgc-default);
+  color: var(--fc-default);
 }
 
 .btn_tile--flagged {
   background-color: var(--bgc-flagged);
+  color: var(--fc-flagged);
 }
 
 .btn_tile--revealed {
   background-color: var(--bgc-revealed);
+  color: var(--fc-revealed);
 }
 
 .btn_tile--boom {
   background-color: var(--bgc-boom);
+  color: var(--fc-boom);
 }

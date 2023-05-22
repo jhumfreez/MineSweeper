@@ -5,4 +5,8 @@
   --bgc-flagged: rgb(183, 19, 117);
   --bgc-revealed: rgb(247, 149, 64);
   --bgc-boom: rgb(252, 79, 0);
+  --fc-default: var(--bgc-flagged);
+  --fc-flagged: var(--bgc-default);
+  --fc-revealed: var(--bgc-boom);
+  --fc-boom: var(--bgc-revealed);
 }
