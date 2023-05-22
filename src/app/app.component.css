@@ -20,8 +20,7 @@ p {
 }
 
 .btn--util {
-  margin: 10px 0;
-  display: block;
+  margin: 10px 10px 10px 0;
 }
 
 .btn_tile--default {

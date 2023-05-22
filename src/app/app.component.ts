@@ -73,4 +73,8 @@ export class AppComponent {
     this.board.reset();
     this.flagInputMode = false;
   }
+
+  debugToggle(){
+    this.board.debugToggle();
+  }
 }

@@ -1,5 +1,10 @@
 import { Point, TileState } from './types';
-import { generateBoard, getRandomInt, isSamePoint } from './utils';
+import {
+  generateBoard,
+  getRandomInt,
+  isSamePoint,
+  pointVisited,
+} from './utils';
 
 export type neighbors<T> = [T | null, T | null, T | null, T | null];
 
@@ -39,7 +44,8 @@ export class Tile implements Tile {
     [TileState.REVEALED_RISKY, 'btn_tile--boom'],
     [TileState.REVEALED_SAFE, 'btn_tile--revealed'],
   ]);
-  constructor(public location: Point) {
+
+  constructor(public location: Point, public debugMode = false) {
     this.init();
     this.displayMap = new Map([
       [TileState.NEUTRAL, ''],
@@ -67,17 +73,23 @@ export class Tile implements Tile {
    * - [number]: adjacent mine count
    */
   get displayValue() {
+    // TODO: Consider refactoring this
     let result = this.displayMap.get(TileState.NEUTRAL);
-    if (!this.revealed && this.isFlagged) {
-      return this.displayMap.get(TileState.FLAGGED);
+    const contentRevealed = this.revealed;
+    const flagged = !contentRevealed && this.isFlagged;
+    const visibleMine = contentRevealed && this.isMine;
+    const visibleValue = contentRevealed && !this.isMine;
+    if (flagged) {
+      result = this.displayMap.get(TileState.FLAGGED);
     }
-    if (this.revealed && this.isMine) {
-      return this.displayMap.get(TileState.REVEALED_RISKY);
+    if (visibleValue) {
+      result = this.displayMap.get(TileState.REVEALED_SAFE);
     }
-    if (this.revealed && !this.isMine) {
-      return this.displayMap.get(TileState.REVEALED_SAFE);
+    if (visibleMine) {
+      result = this.displayMap.get(TileState.REVEALED_RISKY);
     }
-    return result;
+    const debugValue = this.adjacentMineCount + (this.isMine ? 'M' : '');
+    return this.debugMode ? debugValue : result;
   }
 
   assignNeighbors(north: Tile, east: Tile, south: Tile, west: Tile) {
@@ -117,6 +129,7 @@ export class Tile implements Tile {
 }
 
 export class GameBoard implements GameBoard {
+  public debugMode = false;
   constructor(boardSize = 15, maxMineCount = 8) {
     this.maxMineCount = maxMineCount;
     this.score = 0;
@@ -143,7 +156,7 @@ export class GameBoard implements GameBoard {
   }
 
   private initBoard(boardSize: number) {
-    this.board = generateBoard(boardSize, boardSize);
+    this.board = generateBoard(boardSize, boardSize, this.debugMode);
     this.initMines();
   }
 
@@ -244,10 +257,10 @@ export class GameBoard implements GameBoard {
   }
 
   revealTile(tilePosition: Point): boolean {
+    const kaboom = this.board[tilePosition.x][tilePosition.y].reveal();
     // FIXME: exits too early
-    // this.revealSafeNeighbors(tilePosition);
-    return this.board[tilePosition.x][tilePosition.y].reveal();
-    // return currentTile.reveal();
+    this.revealSafeNeighbors(tilePosition);
+    return kaboom;
   }
 
   // TODO: [essential feature] Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
@@ -255,13 +268,22 @@ export class GameBoard implements GameBoard {
   revealSafeNeighbors(tilePosition: Point, visited: Point[] = []) {
     // TODO: getTile seems a little pointless atm... This could be better.
     const currentTile = this.getTile(tilePosition);
+
+    // if(currentTile.adjacentMineCount === 0) {
+    //   return currentTile.reveal();
+    // }
     if (currentTile.adjacentMineCount > 0) {
       return;
     }
     currentTile.reveal();
 
-    for (let neighor of currentTile.neighbors.filter((x) => x)) {
-      if (!visited.some((e) => isSamePoint(e, tilePosition))) {
+    // Don't reveal tiles if adjacent mines exist
+    const safeNeighbors = currentTile.neighbors.filter(
+      (x) => x?.adjacentMineCount === 0
+    );
+    for (let neighor of safeNeighbors) {
+      const neighborVisited = pointVisited(tilePosition, visited);
+      if (!neighborVisited) {
         visited.push(neighor.location);
         this.revealSafeNeighbors(neighor.location, visited);
       }
@@ -279,12 +301,7 @@ export class GameBoard implements GameBoard {
 
   reset() {
     this.score = 0;
-    for (const arr of this.board) {
-      for (const tile of arr) {
-        tile.reset();
-      }
-    }
-    this.initMines();
+    this.initBoard(this.boardSize);
   }
 
   resize(newBoardSize: number) {
@@ -295,5 +312,14 @@ export class GameBoard implements GameBoard {
   // TODO: Score from timer
   updateScore(value: number) {
     this.score += value;
+  }
+
+  debugToggle() {
+    this.debugMode = !this.debugMode;
+    for (let r of this.board) {
+      for (let c of r) {
+        c.debugMode = !c.debugMode;
+      }
+    }
   }
 }
