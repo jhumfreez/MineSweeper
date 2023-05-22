@@ -1,4 +1,4 @@
-import { Point, TileState } from "./types";
+import { Point, TileState } from './types';
 import { generateBoard, getRandomInt, isSamePoint } from './utils';
 
 export type neighbors<T> = [T | null, T | null, T | null, T | null];
@@ -8,6 +8,9 @@ export interface GameBoard {
   score: number;
   boardSize: number;
   board: Tile[][];
+  revealBoard(): void;
+  reset(): void;
+  updateScore(value: number): void;
 }
 
 // TODO: re-evaluate access modifiers
@@ -19,6 +22,10 @@ export interface Tile {
   disabled: boolean;
   neighbors: neighbors<Tile>;
   location: Point;
+  disable(): void;
+  reveal(): void;
+  setMine(): void;
+  reset(): void;
 }
 
 export class Tile implements Tile {
