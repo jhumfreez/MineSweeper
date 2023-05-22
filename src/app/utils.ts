@@ -1,4 +1,5 @@
-import { Point, Tile } from './types';
+import { Tile } from './game.model';
+import { Point } from './types';
 
 /**
  * Generate empty 2D game board of height x width

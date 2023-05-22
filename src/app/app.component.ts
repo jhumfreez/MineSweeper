@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { GameBoard, Point, TileEventType } from './types';
+import { GameBoard } from './game.model';
+import { Point, TileEventType } from './types';
 
 @Component({
   selector: 'my-app',
@@ -18,15 +19,17 @@ export class AppComponent {
   constructor() {
     this.defaultSize = 15;
     this.maxMinePercentage = 0.15;
-    this.defaultMineCount = Math.floor((this.defaultSize ** 2) * this.maxMinePercentage);
+    this.defaultMineCount = Math.floor(
+      this.defaultSize ** 2 * this.maxMinePercentage
+    );
     this.board = new GameBoard(this.defaultSize, this.defaultMineCount);
-    
+
     this.highScore = 0;
     this.flagInputMode = false;
   }
 
   // TODO: Migrate to directive (for right-click listener approach) or event listener (for key press toggle)
-  toggleInputMode(){
+  toggleInputMode() {
     this.flagInputMode = !this.flagInputMode;
   }
 
@@ -41,11 +44,12 @@ export class AppComponent {
   // Game over
   kaboom() {
     this.board.gameOver();
-    this.highScore = this.board.score > this.highScore ? this.board.score : this.highScore;
+    this.highScore =
+      this.board.score > this.highScore ? this.board.score : this.highScore;
   }
 
   // selectTile(x:number, y:number){
-  selectTile(engageTile: [TileEventType, Point]){
+  selectTile(engageTile: [TileEventType, Point]) {
     const isFlagEvent = engageTile[0] === 'F';
     const kaboom = this.board.selectTile(engageTile[1], isFlagEvent);
     if (!kaboom) {
