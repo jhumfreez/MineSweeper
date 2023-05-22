@@ -1,10 +1,12 @@
 /* Add application styles & imports to this file! */
 :root {
   --tile-size: 30px;
+  /* tile theme */
   --bgc-default: rgb(139, 24, 116);
   --bgc-flagged: rgb(183, 19, 117);
   --bgc-revealed: rgb(247, 149, 64);
   --bgc-boom: rgb(252, 79, 0);
+  /* typography theme */
   --fc-default: var(--bgc-flagged);
   --fc-flagged: var(--bgc-revealed);
   --fc-revealed: var(--bgc-flagged);
