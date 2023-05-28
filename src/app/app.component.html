@@ -1,5 +1,5 @@
 <h2>Minesweeper</h2>
-
+<sup>Tip: Right-click to flag/unflag</sup>
 <div class="btn_tile--row" *ngFor="let row of board.board; index as i">
   <button
     *ngFor="let tile of row; index as j"
@@ -14,12 +14,12 @@
     <span class="btn_tile--content">{{ tile.displayValue }}</span>
   </button>
 </div>
-
 <p>Score: {{ board.score }}</p>
 <p>High Score: {{ highScore }}</p>
 <p>Total Mines: {{ board.realMineCount }}</p>
 <p>Percent Mines: %{{ board.percentMined }}</p>
 <button class="btn--util" (click)="reset()">Reset</button>
 <button class="btn--util" (click)="debugToggle()">Debug Mode</button>
+
 <!-- FOR DEBUGGING -->
 <!-- <p>Percent Mines: %{{ board.percentMined }} (Max allowed: %{{maxMinePercentage * 100}})</p> -->
