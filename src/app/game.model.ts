@@ -281,9 +281,6 @@ export class GameBoard implements GameBoard {
     currentTile.reveal();
 
     // Don't reveal tiles if adjacent mines exist
-    // const safeNeighbors = currentTile.neighbors.filter(
-    //   (x) => x?.adjacentMineCount === 0
-    // );
     const safeNeighbors = currentTile.neighbors.filter(
       (x) => x?.adjacentMineCount === 0 && !x.isMine
     );
