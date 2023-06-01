@@ -257,36 +257,38 @@ export class GameBoard implements GameBoard {
   }
 
   revealTile(tilePosition: Point): boolean {
-    const kaboom = this.board[tilePosition.x][tilePosition.y].reveal();
-    // FIXME: exits too early
-    this.revealSafeNeighbors(tilePosition);
+    const tile = this.getTile(tilePosition);
+    const kaboom = tile.reveal();
+    // FIXME
+    if (tile.adjacentMineCount === 0) {
+      this.revealSafeNeighbors(tilePosition);
+    }
     return kaboom;
   }
 
   // TODO: [essential feature] Tile has no adjacent mines, reveal all neighboring tiles until mine boundary established.
   // FIXME: Doesn't capture that a tile was already visited, 4x4 of 0 adjacent would result in inf loop! (I think...)
   revealSafeNeighbors(tilePosition: Point, visited: Point[] = []) {
-    // TODO: getTile seems a little pointless atm... This could be better.
-    const currentTile = this.getTile(tilePosition);
-
-    // if(currentTile.adjacentMineCount === 0) {
-    //   return currentTile.reveal();
-    // }
-    if (currentTile.adjacentMineCount > 0) {
+    const visitedTile = pointVisited(tilePosition, visited);
+    if (visitedTile) {
+      // console.log('visited tile',tilePosition)
       return;
     }
+    visited.push(tilePosition);
+
+    // TODO: getTile seems a little pointless atm... This could be better.
+    const currentTile = this.getTile(tilePosition);
     currentTile.reveal();
 
     // Don't reveal tiles if adjacent mines exist
+    // const safeNeighbors = currentTile.neighbors.filter(
+    //   (x) => x?.adjacentMineCount === 0
+    // );
     const safeNeighbors = currentTile.neighbors.filter(
-      (x) => x?.adjacentMineCount === 0
+      (x) => x?.adjacentMineCount === 0 && !x.isMine
     );
-    for (let neighor of safeNeighbors) {
-      const neighborVisited = pointVisited(tilePosition, visited);
-      if (!neighborVisited) {
-        visited.push(neighor.location);
-        this.revealSafeNeighbors(neighor.location, visited);
-      }
+    for (let neighbor of safeNeighbors) {
+      this.revealSafeNeighbors(neighbor.location, visited);
     }
   }
 
