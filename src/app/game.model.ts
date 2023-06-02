@@ -45,6 +45,18 @@ export class Tile implements Tile {
     [TileState.REVEALED_SAFE, 'btn_tile--revealed'],
   ]);
 
+  // For debugging
+  get stats() {
+    return {
+      isMine: this.isMine,
+      isFlagged: this.isFlagged,
+      revealed: this.revealed,
+      adjacentMineCount: this.adjacentMineCount,
+      location: this.location,
+      neighborCnt: this.neighbors.filter((x) => x).length,
+    };
+  }
+
   constructor(public location: Point, public debugMode = false) {
     this.init();
     this.displayMap = new Map([
@@ -119,6 +131,7 @@ export class Tile implements Tile {
     this.displayMap.set(TileState.REVEALED_SAFE, count > 0 ? count + '' : '');
   }
 
+  // Not called
   reset() {
     this.init();
   }
@@ -135,7 +148,6 @@ export class GameBoard implements GameBoard {
     this.score = 0;
     this.boardSize = boardSize;
     this.initBoard(boardSize);
-    this.discoverTileNeighbors();
   }
 
   // For debug purposes
@@ -158,6 +170,7 @@ export class GameBoard implements GameBoard {
   private initBoard(boardSize: number) {
     this.board = generateBoard(boardSize, boardSize, this.debugMode);
     this.initMines();
+    this.discoverTileNeighbors();
   }
 
   private initMines() {
